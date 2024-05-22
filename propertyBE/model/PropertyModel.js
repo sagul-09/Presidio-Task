@@ -31,10 +31,10 @@ const Schema = mongoose.Schema({
         type: Number,
         required: true,
     },
-    furnished:{
-        type: Boolean,
-        required: true,
-    },
+    // furnished:{
+    //     type: Boolean,
+    //     required: true,
+    // },
     contactInfo:{
         name:{
             type: String,
@@ -49,10 +49,6 @@ const Schema = mongoose.Schema({
             type: Number,
             required: true,
         }
-    },
-    amminnities:{
-            type: [String],
-            default: [],
     },
     nearbyFacilities: {
         hospital: {

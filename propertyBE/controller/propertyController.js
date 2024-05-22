@@ -1,5 +1,6 @@
 import propertyModel from '../model/PropertyModel.js';
 // import authMiddleware from '../middleware/authMiddleware.js';
+import validator from 'validator';
 
 const getAllProperties = async (req, res) => {
     //to get all properties
@@ -25,30 +26,56 @@ const getPropertyByID = async (req, res) => {
 };
 
 const createProperty = async (req, res) => {
-    //creating a new property
-    if (!req.body.place || !req.body.area || req.body.bedroom == null || req.body.bathroom == null || req.body.hospital == null || req.body.college == null) {
-        return res.status(400).json({ message: "Please fill all fields" });
-    }
+    // Creating a new property
     try {
+        // Check if all required fields are provided
+        if (!req.body.title || !req.body.description || !req.body.place || !req.body.area || !req.body.bedroom || !req.body.bathroom || !req.body.price || !req.body.contactInfo || !req.body.contactInfo.name || !req.body.contactInfo.email || !req.body.contactInfo.phone || !req.body.nearbyFacilities || !req.body.nearbyFacilities.hospital || !req.body.nearbyFacilities.college || !req.body.nearbyFacilities.shoppingMall || !req.body.nearbyFacilities.publicTransport) {
+            return res.status(400).json({ message: "Please provide all required fields" });
+        }
+
+        // Check if email is valid
+        if (!validator.isEmail(req.body.contactInfo.email)) {
+            return res.status(400).json({ message: "Please provide a valid email address" });
+        }
+
+        // Check if price is a positive number
+        if (req.body.price <= 0) {
+            return res.status(400).json({ message: "Price should be a positive number" });
+        }
+
+        // Create a new property
         const newProperty = await propertyModel.create(req.body);
+
         return res.status(201).json({ message: "Property has been created successfully", newProperty });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 };
 
+
 const updateProperty = async (req, res) => {
     try {
-        //update property
-        const propertyUpdate = await propertyModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!propertyUpdate) {
+        // Check if property exists
+        const existingProperty = await propertyModel.findById(req.params.id);
+        if (!existingProperty) {
             return res.status(404).json({ message: "Property not found" });
         }
-        return res.status(200).json({ message: "Property has been edited successfully", property: propertyUpdate });
+
+        // Check if price is a positive number
+        if (req.body.price && req.body.price <= 0) {
+            return res.status(400).json({ message: "Price should be a positive number" });
+        }
+
+        // Update the property
+        const updatedProperty = await propertyModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+        return res.status(200).json({ message: "Property has been updated successfully", property: updatedProperty });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 };
+
+
 
 const deleteProperty = async (req, res) => {
     try {
