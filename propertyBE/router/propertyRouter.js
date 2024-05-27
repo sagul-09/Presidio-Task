@@ -1,16 +1,16 @@
-import express from 'express';
-import {getAllProperties, getPropertyByID, createProperty, updateProperty, deleteProperty} from '../controller/propertyController.js';
-// import authMiddleware from '../middleware/authMiddleware.js';
+import express from "express";
+import { getAllProperties, getPropertyByID, createProperty, updateProperty, deleteProperty } from "../controller/propertyController.js";
+import { authMiddleware, roleMiddleware } from "../middleware/authMiddleware.js";
 
 const propertyRouter = express.Router();
 
-//public routes
-propertyRouter.get('/',getAllProperties);
-propertyRouter.get('/:id',getPropertyByID);
+// Public routes
+propertyRouter.get("/",authMiddleware, getAllProperties);
+propertyRouter.get("/:id", getPropertyByID);
 
-//private routes
-propertyRouter.post('/create',createProperty);
-propertyRouter.put('/update/:id',updateProperty);
-propertyRouter.delete('/delete/:id',deleteProperty);
+// Private routes
+propertyRouter.post("/", authMiddleware, roleMiddleware("seller"), createProperty);
+propertyRouter.put("/:id", authMiddleware, roleMiddleware("seller"), updateProperty);
+propertyRouter.delete("/:id", authMiddleware, roleMiddleware("seller"), deleteProperty);
 
 export default propertyRouter;

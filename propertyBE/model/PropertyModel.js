@@ -1,8 +1,9 @@
 import mongoose from 'mongoose'
-// import multer from 'multer';
 import validator from 'validator';
 
-const Schema = mongoose.Schema({
+const Schema = mongoose.Schema;
+
+const propertySchema = new Schema({
     title: {
         type: String,
         required: true,
@@ -11,41 +12,37 @@ const Schema = mongoose.Schema({
         type: String,
         required: true,
     },
-    place:{
+    place: {
         type: String,
         required: true,
     },
-    area:{
+    area: {
         type: String,
         required: true,
     },
-    bedroom:{
+    bedroom: {
         type: Number,
         required: true,
     },
-    bathroom:{
+    bathroom: {
         type: Number,
         required: true,
     },
-    price:{
+    price: {
         type: Number,
         required: true,
     },
-    // furnished:{
-    //     type: Boolean,
-    //     required: true,
-    // },
-    contactInfo:{
-        name:{
+    contactInfo: {
+        name: {
             type: String,
             required: true,
         },
-        email:{
+        email: {
             type: String,
             required: true,
             validate: [validator.isEmail, 'Please provide a valid email']
         },
-        phone:{
+        phone: {
             type: Number,
             required: true,
         }
@@ -68,11 +65,13 @@ const Schema = mongoose.Schema({
             required: true,
         },
     },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
+}, { timestamps: true });
 
-},
-{timestamps: true},
-);
-
-const propertyModel = mongoose.model("Property", Schema);
+const propertyModel = mongoose.model("Property", propertySchema);
 
 export default propertyModel;

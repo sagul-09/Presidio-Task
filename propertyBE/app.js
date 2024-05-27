@@ -20,6 +20,11 @@ const db = mongoose.connect(process.env.DB_URI).then(()=>{
     console.log('Error:' ,err);
 });
 
+app.get('/', (req, res) => {
+    res.send('Welcome to the property management API');
+}
+);
+
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/properties', propertyRouter);
 
